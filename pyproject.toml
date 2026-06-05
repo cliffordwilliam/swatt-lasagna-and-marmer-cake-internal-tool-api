@@ -3,7 +3,7 @@ name = "swatt-lasagna-and-marmer-cake-internal-tool-api"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = "==3.14.*"
 dependencies = [
     "fastapi[standard]>=0.136.1",
 ]
