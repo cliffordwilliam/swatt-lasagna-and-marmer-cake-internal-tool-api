@@ -45,4 +45,4 @@ docker rm study-db
   │   └──── minor — new features, backwards compatible, generally safe
   └────── major — breaking changes, never grow this accidentally
   ```
-3. `create_engine` is very simple in dev, but later in production, please review and see what other arguments to pass into okay. Same goes with `sessionmaker` too. Both are in `root/app/core/database.py`
+3. `create_engine` is very simple in dev, but later in production, please review and see what other arguments to pass into okay. Same goes with `sessionmaker` too. Both are in `root/app/core/database.py`. Engine right now also tells the database to send logs to stdout so maybe turn that off too in production, its on in development so I can see whats going on in the database.

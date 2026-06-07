@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 # Creates Engine once in this worker process heap, so that everything can access it
 # This Engine manages database connection pool
-engine = create_engine("postgresql://user:password@localhost/mydb")
+engine = create_engine("postgresql://user:password@localhost/mydb", echo=True)
 
 # The goal is for each `request response` unit to have one session tied to its lifetime
 # The reasoning is that session is `request response` unit's UoW state

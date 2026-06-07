@@ -20,6 +20,6 @@ class ItemRepository:
     def create(self, name: str, amount: int) -> Item:
         item = Item(name=name, amount=amount)
         self.db.add(item)
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(item)
         return item
