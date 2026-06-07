@@ -24,6 +24,11 @@ Do not forget to stop it later:
 docker stop study-db
 ```
 
+Subsequent runs you can just start it again:
+```bash
+docker start study-db
+```
+
 You can delete the container too if you do not need it anymore, make sure you stop it first though:
 ```bash
 docker rm study-db
