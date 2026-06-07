@@ -1,0 +1,5 @@
+- [ ] Learn further on how to translate DTO to something that you work on in UoW.
+- [ ] Create service layer too.
+- [ ] Learn Alembic to do migration too, to create a table or two.
+- [ ] Figure out table and column naming conventions too.
+- [ ] This uses the psycopg driver which blocks event loop so right now each handler gets its own thread, maybe change this?

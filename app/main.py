@@ -1,3 +1,8 @@
+"""Worker entry point.
+
+This module creates the FastAPI app instance and register routes.
+"""
+
 from fastapi import FastAPI
 from .domains.items import item_routers
 
