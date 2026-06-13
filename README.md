@@ -9,9 +9,9 @@ For local development work, just run `uv run fastapi dev` to start the server wi
 This uses the `psycopg2-binary`/`psycopg2` so do know that each handler is in its own thread, not a coroutine that gets managed by event loop. It is blocking so that is why per handler gets its own dedicated thread. Otherwise if its a coroutine the eventloop hangs and waits for that one coroutine to finish the whole UoW.
 
 ## Provision local offline database:
-To provision a local offline database, just use Docker:
+To provision a local offline database, just use Docker, note the `--rm` there is so that upon stopping the container and volume is gone so there is no persistance:
 ```bash
-docker run --name study-db \
+docker run --rm --name study-db \
   -e POSTGRES_USER=user \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_DB=mydb \
@@ -27,11 +27,6 @@ docker stop study-db
 Subsequent runs you can just start it again:
 ```bash
 docker start study-db
-```
-
-You can delete the container too if you do not need it anymore, make sure you stop it first though:
-```bash
-docker rm study-db
 ```
 
 ## List of things to take care of before going away from development:
