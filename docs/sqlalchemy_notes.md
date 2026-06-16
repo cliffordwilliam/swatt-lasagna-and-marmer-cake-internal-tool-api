@@ -284,3 +284,83 @@ Here is a better example:
 Note that:
 - `.scalars()` → unwrapping instruction ("peel off the Row wrapper") - useful when you do not want to keep getting single item tuple!
 - `.all()` → "now give me everything as a normal Python list" (otherwise you get this other type that you can iter once only...)
+
+---
+
+# Working with Data - Using SELECT Statements
+
+.select() construct here can be used as a building component.
+As in you can create conditional chain on say wheather we call .select(a) or .select(b) in your logic
+Which may cause you to have different SQL query end result, say if this is a filter endpoint
+This is called `generative`
+
+Select returns Result that you can iterate, per iteration you work with Row
+Row here is like a stream/cursor in concept where it comes in one by one
+You have means to consume them into memory, capture it as a process memory in stack/heap
+
+Note that if you select from a table this way: `select(user_table).where(user_table.c.name == "spongebob")`
+Then you get all that table columns:
+```sql
+SELECT user_account.id, user_account.name, user_account.fullname
+FROM user_account
+WHERE user_account.name = :name_1
+```
+
+Here we execute it, then iterate over the Rows, given that the above select returned value is stored in smtm
+Notice that what you put in select, determines what the Row tuple members are
+Since this table has like 3 columns, then the tuple row has 3 members too
+```py
+with engine.connect() as conn:
+    for row in conn.execute(stmt):
+        print(row)
+        # (1, 'spongebob', 'Spongebob Squarepants')
+```
+
+Note if you use ORM, you get 1 tuple member which is the mapped class: `(User(id=1, name='spongebob', fullname='Spongebob Squarepants'),)`
+
+Also note that if you use select against Table or mapped classes, they are not going to always be the same, I wont cover this in detail here on the why
+
+Notice that the FROM is implicitly filled in? Well its because it implicitly sets itself based on what you put into the select
+So if you pick 2 tables, then the FROM will have 2 table that owns the 2 things that you put in select
+Then stuff that you can put into the select must be compliant with the ColumnElement class. Where FromClause is what goes into FROM
+FromClause is then inferred from those columns
+Please refer to docs on how the details, what matters is that you know what is possible to do here
+
+Mapped classes and Table can be used with .select() construct.
+Aka mapped classes, Table and Column can participate in SQL Expression Language.
+
+Say you want to select from one table, you can use .select() with Table or mapped class this way.
+`select(User) or select(user_table)`
+
+Note that both may differ but for this case they are identical.
+```sql
+SELECT user_account.id, user_account.name, user_account.fullname
+FROM user_account
+```
+
+As you saw above the select with mapped class returns a tuple that has mapped class member
+So row tuple member does not have multiple member for each column
+But it has one mapped class member that holds the columns
+
+Table way:
+- tuple
+    - column A
+    - columb B
+
+ORM mapped class way:
+- tuple
+    - mapped class
+
+There is a convenient way to transform this cursor/stream shape
+Where we unwrap the tuple for convenience with: `session.scalars(select(User)).first()`
+Which gives you: `User(id=1, name='spongebob', fullname='Spongebob Squarepants')`
+Instead of: `(User(id=1, name='spongebob', fullname='Spongebob Squarepants'),)`
+
+But if you decide to pick column in mapped class, then you get the usual tuple with desired column members:
+`row = session.execute(select(User.name, User.fullname)).first()`
+That row cursor/stream tuple has 2 members like as if you use the Table with select: `('spongebob', 'Spongebob Squarepants')`
+
+You can mix the 2 way, where first you select a table property then the other you select a whole table
+`select(User.name, Address).where(User.id == Address.user_id).order_by(Address.id)`
+This is what you get per item, as expected, 2 member, first one is immediate column value, the other is full mapped class
+`('spongebob', Address(id=1, email_address='spongebob@sqlalchemy.org'))`

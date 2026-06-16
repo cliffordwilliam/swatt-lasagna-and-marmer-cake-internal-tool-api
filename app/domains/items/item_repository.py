@@ -17,7 +17,7 @@ class ItemRepository:
         return self.db.get(Item, item_id)
 
     def get_all(self) -> Sequence[Item]:
-        return self.db.execute(select(Item)).scalars().all()
+        return self.db.scalars(select(Item)).all()
 
     def create(self, name: str, amount: int) -> Item:
         item = Item(name=name, amount=amount)
