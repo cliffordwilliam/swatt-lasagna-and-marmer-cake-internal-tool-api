@@ -1,15 +1,15 @@
 # Notes
 
-Since this project main entry point is in `/app` directory, the `pyproject.toml` has been updated about that so that `FastAPI` knows about this custom entry point.
+This project uses `FastAPI` and it needs to know where the entry point is (`/app`), so the `pyproject.toml` has been updated.
 
-Before running this locally, run `uv sync` to update your local `venv` dependencies to match what the `lock` has declared.
+Before running this locally, run `uv sync` to upsert your local `venv` dependencies to match what the `lock` has declared.
 
 For local development work, just run `uv run fastapi dev` to start the server with hotreload. Use `ctrl + c` to stop.
 
-This uses the `psycopg2-binary`/`psycopg2` so do know that each handler is in its own thread, not a coroutine that gets managed by event loop. It is blocking so that is why per handler gets its own dedicated thread. Otherwise if its a coroutine the eventloop hangs and waits for that one coroutine to finish the whole UoW.
+This uses the `psycopg2-binary` that blocks event loop, so each handler delegate work to a thread instead.
 
-## Provision local offline database:
-To provision a local offline database, just use Docker, note the `--rm` there is so that upon stopping the container and volume is gone so there is no persistance:
+## Provision offline database for testing:
+Just use Docker, note the `--rm` there is so that upon stopping the container and volume is gone so there is no persistance:
 ```bash
 docker run --rm --name study-db \
   -e POSTGRES_USER=user \
@@ -19,14 +19,9 @@ docker run --rm --name study-db \
   -d postgres:16
 ```
 
-Do not forget to stop it later:
+Do not forget to stop it later, note that this removes the container and volume:
 ```bash
 docker stop study-db
-```
-
-Subsequent runs you can just start it again:
-```bash
-docker start study-db
 ```
 
 ## List of things to take care of before going away from development:

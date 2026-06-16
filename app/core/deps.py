@@ -9,12 +9,7 @@ from .database import session
 
 
 def get_db():
-    db = session()
-    try:
+    # .begin() would auto commit or rollback once at the end
+    # This is context manager protocol compliant, so outside the indentation is closes the Session
+    with session.begin() as db:
         yield db
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
-    finally:
-        db.close()
