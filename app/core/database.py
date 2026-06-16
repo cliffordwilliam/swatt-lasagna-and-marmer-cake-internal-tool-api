@@ -13,7 +13,6 @@ engine = create_engine("postgresql://user:password@localhost/mydb", echo=True)
 # The goal is for each `request response` unit to have one session tied to its lifetime
 # The reasoning is that session is `request response` unit's UoW state
 # This lives in heap so everyone can access it
-# This is to be used in a `try finally` block so that when owner is out of scope it clean itself up
 session = sessionmaker(engine)
 
 
